@@ -1,0 +1,16 @@
+.size-22 { font-size: 22px }
+.size-25 { font-size: 25px }
+.size-29 { font-size: 29px }
+.size-50 { font-size: 50px }
+
+.list-block input[type=email] {
+    font-size: 14px;
+}
+
+.list-block input[type=password] {
+    font-size: 14px;
+}
+
+.color-green-light {
+    color: #51c765;
+}
