@@ -16,7 +16,6 @@ document.addEventListener("deviceready", function(){
     $("#btnback").bind("click", gotoindex);
     $("#registrarcuenta").bind("click",registrarcuenta);
     $("#back").bind("click",back);
-	$('#camara').bind('click', camara);
 	$('#pet1').bind('click', notificacion);
 	$('#pet2').bind('click', notificacion);
     $('#nombre_user_session').html('<b>Hola ' + localStorage.getItem('nombre_completo') + '</b>');
@@ -43,44 +42,6 @@ function notificacion(){
 	myApp.alert('Se ha enviado una notificación al dueño','Animal Finder');
 }
 function registrarcuenta(){
-    var direccion = $('#direccion').val();
-    var nombres = $('#name').val();
-    var apellidoP = $('#apellidoP').val();
-    var apellidoM = $('#apellidoM').val();
-    var email = $('#correo').val();
-    var nick = $('#nick').val();
-    var pass = $('#pass').val();
-    myApp.showPreloader('Registrando...');
-    $.ajax({
-          dataType: 'json',
-          type: 'POST',
-          data: {
-              nombreUser:nick, 
-              pass:pass, 
-              nombres:nombres,
-              aPaterno:apellidoP,
-              aMaterno:apellidoM,
-              email:email,
-              direccion:direccion
-              
-          },
-          url: 'http://servicioswebmoviles.hol.es/index.php/WS_NUEVO_USUARIO',
-          success: function (data, status, xhr) {
-              if(data.guardado){
-                  myApp.hidePreloader();
-                  console.log("Registrado");
-                  window.location = "login.html";
-              }else{
-                  myApp.hidePreloader();
-                  var msg = data.info;
-                  myApp.alert(msg,'Error');
-              }
-          },
-          error: function (xhr, status) {
-              myApp.hidePreloader();
-              myApp.alert('Datos Incorrectos','Error');
-          }
-      });
     
     
 }
@@ -88,6 +49,74 @@ function gotoindex(){
       window.location = "index.html";  
 
 }
+function uploadPhoto1(imageURI){
+    var options = new FileUploadOptions();
+    options.fileKey="file";
+    options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
+    options.mimeType="image/jpeg";
+    
+    var params = new Object();
+    params.value1="test";
+    params.value2="param";
+    
+    options.params=params;
+    options.chunkedMode= false;
+    
+    var ft = new FileTransfer();
+    ft.upload(imageURI, "http://servicioswebmoviles.hol.es/index.php/WS_REGISTRARMASCOTA",win,fail);
+    
+}
+function uploadPhoto() {
+    if($('#imgd').attr('src') != ''){
+		var id = localStorage.getItem('id');
+        var imageURI = $('#imgd').attr('src');
+        var options = new FileUploadOptions();
+        options.fileKey="file";
+        options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
+        options.mimeType="image/jpeg";
+
+        var params = new Object();
+        params.nombre = "FOTO TEST";
+		params.ID_USUARIO=id;
+		params.descripcion='foto test descripcion'
+		
+        options.params = params;
+        options.chunkedMode = false;
+        
+        myApp.showPreloader('Registrando...');
+        
+        var ft = new FileTransfer();
+        ft.upload(imageURI, "http://servicioswebmoviles.hol.es/index.php/WS_REGISTRARMASCOTA", win, fail, options);
+    }else{
+        myApp.alert('No hay foto');
+    }
+}
+function win(r) {
+    myApp.hidePreloader();
+    var json = JSON.parse(r.response);
+    
+    if(json.respuesta){
+        localStorage.setItem('idperdida', json.IdPerdida);
+		localStorage.setItem('idMascota', json.IdMascota);
+       // $('#imgd').attr('src','img/no-foto.png');
+        myApp.alert('Imagen Subida exitosamente');
+    }else{
+        myApp.alert('La imagen no se a guardado en el servidor');
+    }
+    
+}
+
+function fail(error) {
+    myApp.hidePreloader();
+    console.log("An error has occurred: Code = " + error.code)
+    myApp.alert("Error al subir la imgaen");
+}
+
+function error(){
+    console.log("ERROR");
+}
+
+         
 function iniciar_session(){
      var user = $('#user').val();
     var pass = $('#pass').val();
@@ -127,23 +156,6 @@ function iniciar_session(){
 function conn_success(){
         window.location = "main-init.html";
 
-}
-function camara(){
-    navigator.camera.getPicture(function(photo){
-
-		$('#yt').attr('src',photo);
-		$('#yt1').attr('src',photo);
-		
-
-		
-    }, function(error){
-        myApp.alert('Error al tomar la fotografía','Error')
-    }, {
-        quality:80,
-		saveToPhotoAlbum:true,
-		correctOrientation:true,
-		cameraDirection:0
-    });
 }
 
 
@@ -197,7 +209,7 @@ function iniciar_sessio(){
 }
 
 function camara(){
-    navigator.camera.getPicture(function(photo){
+    navigator.camera.getPicture(uploadPhoto,function(photo){
         $('#img_cam').attr('src',photo);
 
     }, function(error){
