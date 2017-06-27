@@ -19,7 +19,7 @@ document.addEventListener("deviceready", function(){
 	$('#pet1').bind('click', notificacion);
 	$('#pet2').bind('click', notificacion);
     $('#nombre_user_session').html('<b>Hola ' + localStorage.getItem('nombre_completo') + '</b>');
-    $('#tosend').bind('click', enviada);
+    $('#tosend').bind('click', uploadPhoto);
     $('#cerrarsesion').bind('click', cerrarsesion);
 
 });
@@ -32,9 +32,7 @@ function cerrarsesion(){
 
 
 function enviada(){
-     myApp.alert('Mascota agregada', 'Animal Finder', function(){
-           window.location = "main-init.html";
-     });
+     
   
    
 }
@@ -99,7 +97,9 @@ function win(r) {
         localStorage.setItem('idperdida', json.IdPerdida);
 		localStorage.setItem('idMascota', json.IdMascota);
        // $('#imgd').attr('src','img/no-foto.png');
-        myApp.alert('Imagen Subida exitosamente');
+       myApp.alert('Mascota agregada', 'Animal Finder', function(){
+           window.location = "main-init.html";
+     });
     }else{
         myApp.alert('La imagen no se a guardado en el servidor');
     }
@@ -209,7 +209,7 @@ function iniciar_sessio(){
 }
 
 function camara(){
-    navigator.camera.getPicture(uploadPhoto,function(photo){
+    navigator.camera.getPicture(function(photo){
         $('#img_cam').attr('src',photo);
 
     }, function(error){
