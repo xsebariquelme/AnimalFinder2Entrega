@@ -29,6 +29,51 @@ function cerrarsesion(){
 
 }
 
+function registrarcuenta(){
+    var direccion = $('#direccion').val();
+    var nombres = $('#name').val();
+    var apellidoP = $('#apellidoP').val();
+    var apellidoM = $('#apellidoM').val();
+    var email = $('#correo').val();
+    var nick = $('#nick').val();
+    var pass = $('#pass').val();
+    myApp.showPreloader('Registrando...');
+    if(!(direccion.length<=0||nombres.length<=0||apellidoP.length<=0||apellidoM.length<=0||email.length<=0||nick.length<=0||pass.length<=0)){
+    $.ajax({
+          dataType: 'json',
+          type: 'POST',
+          data: {
+              nombreUser:nick, 
+              pass:pass, 
+              nombres:nombres,
+              aPaterno:apellidoP,
+              aMaterno:apellidoM,
+              email:email,
+              direccion:direccion
+              
+          },
+          url: 'http://servicioswebmoviles.hol.es/index.php/WS_NUEVO_USUARIO',
+          success: function (data, status, xhr) {
+              if(data.guardado){
+                  myApp.hidePreloader();
+                  console.log("Registrado");
+                  window.location = "login.html";
+              }else{
+                  myApp.hidePreloader();
+                  var msg = data.info;
+                  myApp.alert(msg,'Error');
+              }
+          },
+          error: function (xhr, status) {
+              myApp.hidePreloader();
+              myApp.alert('Datos Incorrectos','Error');
+          }
+      });
+}else{
+            myApp.hidePreloader();
+              myApp.alert('Debe completar los campos','Error');
+}
+}
 
 
 function enviada(){
@@ -39,10 +84,7 @@ function enviada(){
 function notificacion(){
 	myApp.alert('Se ha enviado una notificación al dueño','Animal Finder');
 }
-function registrarcuenta(){
-    
-    
-}
+
 function gotoindex(){
       window.location = "index.html";  
 
