@@ -17,6 +17,8 @@ document.addEventListener("deviceready", function(){
     $("#registrarcuenta").bind("click",registrarcuenta);
     $("#back").bind("click",back);
 	$('#pet1').bind('click', notificacion);
+	$('#listar').bind('click', listaPerdidas);
+	$('#golistar').bind('click', irlistaPerdidas);
 	$('#pet2').bind('click', notificacion);
     $('#nombre_user_session').html('<b>Hola ' + localStorage.getItem('nombre_completo') + '</b>');
     $('#tosend').bind('click', uploadPhoto);
@@ -60,7 +62,7 @@ function registrarcuenta(){
                   window.location = "login.html";
               }else{
                   myApp.hidePreloader();
-                  var msg = data.info;
+                  var msg = "Datos no guardados";
                   myApp.alert(msg,'Error');
               }
           },
@@ -74,10 +76,35 @@ function registrarcuenta(){
               myApp.alert('Debe completar los campos','Error');
 }
 }
+function irlistaPerdidas(){
+     window.location = "listarperdidas.html";
+}
 
-
-function enviada(){
-     
+function listaPerdidas(){
+     $.ajax({
+          dataType: 'json',
+          type: 'POST',
+          data: {
+          },
+          url: 'http://servicioswebmoviles.hol.es/index.php/WS_LISTADOPERDIDA',
+          success: function (data, status, xhr) {
+              if(data.guardado){
+                  
+                  localStorage.setItem('idmascota',id_mascota);
+                  localStorage.setItem('nombremascota',nombre);
+                  localStorage.setItem('descripcionmascota',descripcion);
+                  localStorage.setItem('path',path_imagen);
+              }else{
+                  myApp.hidePreloader();
+                  var msg = data.info;
+                  myApp.alert(msg,'Error');
+              }
+          },
+          error: function (xhr, status) {
+              myApp.hidePreloader();
+              myApp.alert('Datos Incorrectos','Error');
+          }
+      });
   
    
 }
