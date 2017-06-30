@@ -90,10 +90,25 @@ function listaPerdidas(){
           success: function (data, status, xhr) {
               if(data.guardado){
                   
+                 /*   html_text += "<li>";
+                    html_text += "<a href='#' class="item-link item-content">";
+                    html_text += "<div class="item-media"><img src="..." width="80"></div>";
+                    html_text += "<div class="item-inner">";
+                    html_text += "<div class="item-title-row">";
+                    html_text += "<div class="item-title">Yellow Submarine</div>
+                    html_text += "<div class="item-after">$15</div>";
+                    html_text += "</div>";
+                    html_text += "<div class="item-subtitle">Beatles</div>";
+                    html_text += "<div class="item-text">Lorem ipsum dolor sit amet...</div>";
+                    html_text += "</div>";
+                    html_text += "</a>";
+                    html_text += "</li>";
+            
+                  $('#contenedor').append(html_text);
                   localStorage.setItem('idmascota',id_mascota);
                   localStorage.setItem('nombremascota',nombre);
                   localStorage.setItem('descripcionmascota',descripcion);
-                  localStorage.setItem('path',path_imagen);
+                  localStorage.setItem('path',path_imagen);*/
               }else{
                   myApp.hidePreloader();
                   var msg = data.info;
@@ -116,24 +131,11 @@ function gotoindex(){
       window.location = "index.html";  
 
 }
-function uploadPhoto1(imageURI){
-    var options = new FileUploadOptions();
-    options.fileKey="file";
-    options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
-    options.mimeType="image/jpeg";
-    
-    var params = new Object();
-    params.value1="test";
-    params.value2="param";
-    
-    options.params=params;
-    options.chunkedMode= false;
-    
-    var ft = new FileTransfer();
-    ft.upload(imageURI, "http://servicioswebmoviles.hol.es/index.php/WS_REGISTRARMASCOTA",win,fail);
-    
-}
+
 function uploadPhoto() {
+    if($('#imgd').attr('src') == 'img/no-foto.png'){
+         $('#imgd').attr('src','');
+    }
     if($('#imgd').attr('src') != ''){
 		var id = localStorage.getItem('id');
         var imageURI = $('#imgd').attr('src');
@@ -141,11 +143,11 @@ function uploadPhoto() {
         options.fileKey="file";
         options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
         options.mimeType="image/jpeg";
-
+        
         var params = new Object();
-        params.nombre = "FOTO TEST";
+        params.nombre = localStorage.getItem('nombrePet');
 		params.ID_USUARIO=id;
-		params.descripcion='foto test descripcion'
+		params.descripcion=localStorage.getItem('detallePet');
 		
         options.params = params;
         options.chunkedMode = false;
@@ -165,7 +167,7 @@ function win(r) {
     if(json.respuesta){
         localStorage.setItem('idperdida', json.IdPerdida);
 		localStorage.setItem('idMascota', json.IdMascota);
-       // $('#imgd').attr('src','img/no-foto.png');
+       $('#imgd').attr('src','img/no-foto.png');
        myApp.alert('Mascota agregada', 'Animal Finder', function(){
            window.location = "main-init.html";
      });
@@ -177,8 +179,8 @@ function win(r) {
 
 function fail(error) {
     myApp.hidePreloader();
-    console.log("An error has occurred: Code = " + error.code)
-    myApp.alert("Error al subir la imgaen");
+    console.log("A ocurrido un error: Codigo = " + error.code)
+    myApp.alert("Error al subir la imagen");
 }
 
 function error(){
@@ -279,8 +281,18 @@ function iniciar_sessio(){
 
 function camara(){
     navigator.camera.getPicture(function(photo){
-        $('#img_cam').attr('src',photo);
-
+        $('#imgd').attr('src',photo);
+        $$('.prompt-ok').on('click', function () {
+            myApp.prompt('Ingrese nombre de la mascota', function (value) {
+                //myApp.alert('Your name is "' + value + '". You clicked Ok button');
+                localStorage.setItem('nombrePet',value);
+            });
+        });
+        $$('.prompt-ok').on('click', function () {
+            myApp.prompt('Ingrese detalle de la mascota', function (value) {
+                localStorage.setItem('detallePet',value);
+            });
+        });
     }, function(error){
         myApp.alert('Error al tomar la fotografía','Animal Finder')
     }, {
