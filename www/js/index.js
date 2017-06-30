@@ -168,11 +168,20 @@ function win(r) {
         localStorage.setItem('idperdida', json.IdPerdida);
 		localStorage.setItem('idMascota', json.IdMascota);
        $('#imgd').attr('src','img/no-foto.png');
+       
+        
+$$('.prompt-title-ok').on('click', function () {
+    myApp.prompt('Nombre de la mascota', 'ANIMAL FINDER', function (value) {
+        myApp.alert('Tu mascota: "' + value + '". fue agregada');
+    });
+});
+        
+        
        myApp.alert('Mascota agregada', 'Animal Finder', function(){
            window.location = "main-init.html";
      });
     }else{
-        myApp.alert('La imagen no se a guardado en el servidor');
+        myApp.alert('La imagen no se a guardado en el servidor', 'Animal Finder');
     }
     
 }
@@ -180,7 +189,7 @@ function win(r) {
 function fail(error) {
     myApp.hidePreloader();
     console.log("A ocurrido un error: Codigo = " + error.code)
-    myApp.alert("Error al subir la imagen");
+    myApp.alert("Error al subir la imagen", 'Animal Finder');
 }
 
 function error(){
