@@ -162,7 +162,7 @@ function uploadPhoto() {
         
         var params = new Object();
         params.nombre = localStorage.getItem('nombrePet');
-		params.ID_USUARIO=id;
+		params.id_usuario=id;
 		params.descripcion=localStorage.getItem('detallePet');
         options.params = params;
         options.chunkedMode = false;
