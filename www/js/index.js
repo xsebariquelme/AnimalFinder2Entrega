@@ -131,7 +131,23 @@ function gotoindex(){
       window.location = "index.html";  
 
 }
-
+function camara(){
+    navigator.camera.getPicture(function(photo){
+        $('#imgd').attr('src',photo);
+            myApp.prompt('Ingrese nombre de la mascota', function (value) {
+                //myApp.alert('Your name is "' + value + '". You clicked Ok button');
+                localStorage.setItem('nombrePet',value);
+            });
+            myApp.prompt('Ingrese detalle de la mascota', function (value) {
+                localStorage.setItem('detallePet',value);
+            });
+    }, function(error){
+        myApp.alert('Error al tomar la fotografía','Animal Finder')
+    }, {
+        quality:100,
+        correctOrientation: true
+    });
+}
 function uploadPhoto() {
     if($('#imgd').attr('src') == 'img/no-foto.png'){
          $('#imgd').attr('src','');
@@ -148,12 +164,9 @@ function uploadPhoto() {
         params.nombre = localStorage.getItem('nombrePet');
 		params.ID_USUARIO=id;
 		params.descripcion=localStorage.getItem('detallePet');
-		
         options.params = params;
         options.chunkedMode = false;
-        
         myApp.showPreloader('Registrando...');
-        
         var ft = new FileTransfer();
         ft.upload(imageURI, "http://servicioswebmoviles.hol.es/index.php/WS_REGISTRARMASCOTA", win, fail, options);
     }else{
@@ -169,12 +182,6 @@ function win(r) {
 		localStorage.setItem('idMascota', json.IdMascota);
        $('#imgd').attr('src','img/no-foto.png');
        
-        
-$$('.prompt-title-ok').on('click', function () {
-    myApp.prompt('Nombre de la mascota', 'ANIMAL FINDER', function (value) {
-        myApp.alert('Tu mascota: "' + value + '". fue agregada');
-    });
-});
         
         
        myApp.alert('Mascota agregada', 'Animal Finder', function(){
@@ -227,7 +234,7 @@ function iniciar_session(){
           },
           error: function (xhr, status) {
               myApp.hidePreloader();
-              myApp.alert('Datos Incorrectos2','Error');
+              myApp.alert('Error en la conexión','Error');
           }
       });
     
@@ -291,17 +298,17 @@ function iniciar_sessio(){
 function camara(){
     navigator.camera.getPicture(function(photo){
         $('#imgd').attr('src',photo);
-        $$('.prompt-ok').on('click', function () {
+       
             myApp.prompt('Ingrese nombre de la mascota', function (value) {
                 //myApp.alert('Your name is "' + value + '". You clicked Ok button');
                 localStorage.setItem('nombrePet',value);
             });
-        });
-        $$('.prompt-ok').on('click', function () {
+        
+        
             myApp.prompt('Ingrese detalle de la mascota', function (value) {
                 localStorage.setItem('detallePet',value);
             });
-        });
+        
     }, function(error){
         myApp.alert('Error al tomar la fotografía','Animal Finder')
     }, {
