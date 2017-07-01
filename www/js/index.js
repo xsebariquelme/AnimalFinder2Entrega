@@ -162,8 +162,11 @@ function uploadPhoto() {
         
         var params = new Object();
         params.nombre = localStorage.getItem('nombrePet');
+        console.log(params.nombre);
 		params.id_usuario=id;
+        console.log(params.id_usuario);
 		params.descripcion=localStorage.getItem('detallePet');
+        console.log(params.descripcion);
         options.params = params;
         options.chunkedMode = false;
         myApp.showPreloader('Registrando...');
