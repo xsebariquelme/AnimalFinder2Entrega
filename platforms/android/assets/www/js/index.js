@@ -14,11 +14,12 @@ document.addEventListener("deviceready", function(){
     $("#registro").bind("click",registro);
     $("#btnregistro").bind("click",registro);
     $("#btnback").bind("click", gotoindex);
+    $("#cerrarindex").bind("click", gotoindex);
     $("#registrarcuenta").bind("click",registrarcuenta);
     $("#back").bind("click",back);
 	$('#pet1').bind('click', notificacion);
 	$('#listar').bind('click', listaPerdidas);
-	$('#golistar').bind('click', irlistaPerdidas);
+	$('#cerrarmain').bind('click', gomain);
 	$('#pet2').bind('click', notificacion);
     $('#nombre_user_session').html('<b>Hola ' + localStorage.getItem('nombre_completo') + '</b>');
     $('#tosend').bind('click', uploadPhoto);
@@ -76,42 +77,49 @@ function registrarcuenta(){
               myApp.alert('Debe completar los campos','Error');
 }
 }
-function irlistaPerdidas(){
-     window.location = "listarperdidas.html";
+function gomain(){
+      window.location = "main-init.html";
 }
 
 function listaPerdidas(){
-     $.ajax({
+    
+                     myApp.showPreloader('Cargando...');
+    $.ajax({
           dataType: 'json',
           type: 'POST',
           data: {
           },
           url: 'http://servicioswebmoviles.hol.es/index.php/WS_LISTADOPERDIDA',
           success: function (data, status, xhr) {
-              if(data.guardado){
+              if(data.respuesta==null){
+                    var html_text = '';
+                    for (var i in data) {
+                    html_text += " <li >";
+                    html_text += "  <a id='pet' href='#' class='item-link item-content ' >";
+
+                   html_text += " <div class='item-media'><img src="+data[i].path_imagen+" width="+44+"></div>";
+                   html_text += " <div class='item-inner'>";
+                   html_text += " <div class='item-title-row'>";
+                   html_text += " <div class='item-title'>"+data[i].nombre+"</div>";
+                   html_text += " </div>";
+                   html_text += " <div class='item-subtitle'>"+data[i].descripcion+"</div>";
+                   html_text += " </div>";
+
+                    html_text += "<input type='hidden' id='idpet' value ="+data[i].id_mascota+">";
+                   html_text += " </a>";
+                   html_text += " </li >";
+                        
+                   
                   
-                 /*   html_text += "<li>";
-                    html_text += "<a href='#' class="item-link item-content">";
-                    html_text += "<div class="item-media"><img src="..." width="80"></div>";
-                    html_text += "<div class="item-inner">";
-                    html_text += "<div class="item-title-row">";
-                    html_text += "<div class="item-title">Yellow Submarine</div>
-                    html_text += "<div class="item-after">$15</div>";
-                    html_text += "</div>";
-                    html_text += "<div class="item-subtitle">Beatles</div>";
-                    html_text += "<div class="item-text">Lorem ipsum dolor sit amet...</div>";
-                    html_text += "</div>";
-                    html_text += "</a>";
-                    html_text += "</li>";
-            
+                        
+                    }
+                  
                   $('#contenedor').append(html_text);
-                  localStorage.setItem('idmascota',id_mascota);
-                  localStorage.setItem('nombremascota',nombre);
-                  localStorage.setItem('descripcionmascota',descripcion);
-                  localStorage.setItem('path',path_imagen);*/
+                  myApp.hidePreloader();
+                   myApp.popup('.popup-search');
               }else{
                   myApp.hidePreloader();
-                  var msg = data.info;
+                  var msg = 'Error de conexión';
                   myApp.alert(msg,'Error');
               }
           },
@@ -296,26 +304,4 @@ function iniciar_sessio(){
     }else{
         myApp.alert("No hay datos ingresados", "Animal Finder");
     }
-}
-
-function camara(){
-    navigator.camera.getPicture(function(photo){
-        $('#imgd').attr('src',photo);
-       
-            myApp.prompt('Ingrese nombre de la mascota', function (value) {
-                //myApp.alert('Your name is "' + value + '". You clicked Ok button');
-                localStorage.setItem('nombrePet',value);
-            });
-        
-        
-            myApp.prompt('Ingrese detalle de la mascota', function (value) {
-                localStorage.setItem('detallePet',value);
-            });
-        
-    }, function(error){
-        myApp.alert('Error al tomar la fotografía','Animal Finder')
-    }, {
-        quality:100,
-        correctOrientation: true
-    });
 }
