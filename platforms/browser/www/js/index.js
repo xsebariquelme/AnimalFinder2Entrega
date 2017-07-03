@@ -17,16 +17,59 @@ document.addEventListener("deviceready", function(){
     $("#cerrarindex").bind("click", gotoindex);
     $("#registrarcuenta").bind("click",registrarcuenta);
     $("#back").bind("click",back);
-	$('#pet1').bind('click', notificacion);
+	$("#pet3").bind('click', showpet);
+    $("[id*=pet]").bind('click', showpet);
 	$('#listar').bind('click', listaPerdidas);
 	$('#cerrarmain').bind('click', gomain);
-	$('#pet2').bind('click', notificacion);
+	//$('#pet2').bind('click', notificacion);
     $('#nombre_user_session').html('<b>Hola ' + localStorage.getItem('nombre_completo') + '</b>');
     $('#tosend').bind('click', uploadPhoto);
     $('#cerrarsesion').bind('click', cerrarsesion);
 
 });
-
+function showpet(){
+      myApp.showPreloader('Cargando...');
+    $.ajax({
+          dataType: 'json',
+          type: 'POST',
+          data: {
+              id:$('#idpet').val()
+              
+          },
+          url: 'http://http://servicioswebmoviles.hol.es/index.php/WS_SOLICITARINFOPERDIDAS',
+          success: function (data, status, xhr) {
+              if(data.respuesta==null){
+                  var html_text='';
+             html_text += "<div class='content-block-title'> Detalle Mascota Perdida </div>";
+            html_text += "<!-- Inset content block -->";
+            html_text += "<div class='content-block inset'>";
+            html_text += "<div class='content-block-inner'>";
+            html_text += "<p><h4>"+data.nombre+"</h4></p>";
+            html_text += "<p>"+data.descripcion+"</p>";
+            html_text += "<p>"+data.nombre_dueno+" Contacto: "+data.contacto+"</p>";
+            html_text += "<p>Ayuda porfavor!!</p>";
+            html_text += "<img src="+data.path+" width='100%'/>";
+            html_text += "<a class='bottom'  id='pet1'>Enviar Notificación</a>";
+            html_text += "<p><a href='#' class='close-popup'>Cerrar</a></p>";
+            html_text += "</div>";
+            html_text += "</div>";
+         $('#contenedor2').append(html_text);
+                   
+                    myApp.hidePreloader();
+                   myApp.popup('.popup-mascota-detalle');
+                  }else{
+                  myApp.hidePreloader();
+                  var msg = data.respuesta;
+                   myApp.popup('.popup-search');
+              }
+          },
+          error: function (xhr, status) {
+              myApp.hidePreloader();
+              myApp.alert('Datos Incorrectos','Error');
+          }
+      });
+  
+}
 function cerrarsesion(){
         window.location = "index.html";
 
@@ -81,6 +124,58 @@ function gomain(){
       window.location = "main-init.html";
 }
 
+function listaEncontrada(){
+    
+    $.ajax({
+          dataType: 'json',
+          type: 'POST',
+          data: {
+          },
+          url: 'http://servicioswebmoviles.hol.es/index.php/WS_LISTADOENCONTRADAS',
+          success: function (data, status, xhr) {
+              if(data.respuesta==null){
+                    var html_text = '';
+                    for (var i in data) {
+                    html_text += " <li >";
+                    html_text += "  <a id='pet' href='#' class='item-link item-content ' >";
+
+                   html_text += " <div class='item-media'><img src="+data[i].path_imagen+" width="+44+"></div>";
+                   html_text += " <div class='item-inner'>";
+                   html_text += " <div class='item-title-row'>";
+                   html_text += " <div class='item-title'>"+data[i].nombre+"</div>";
+                   html_text += " </div>";
+                   html_text += " <div class='item-subtitle'>"+data[i].descripcion+" (Mascota con localización)</div>";
+                   html_text += " </div>";
+
+                    html_text += "<input type='hidden' id='idpet' value ="+data[i].id_mascota+">";
+                    html_text += "<input type='hidden' id='lat' value ="+data[i].lat+">";
+                    html_text += "<input type='hidden' id='lon' value ="+data[i].lon+">";
+                   html_text += " </a>";
+                   html_text += " </li >";
+                        
+                   
+                  
+                        
+                    }
+                  
+                  $('#contenedor').append(html_text);
+                   
+                    myApp.hidePreloader();
+                   myApp.popup('.popup-search');
+              }else{
+                  myApp.hidePreloader();
+                  var msg = data.respuesta;
+                   myApp.popup('.popup-search');
+              }
+          },
+          error: function (xhr, status) {
+              myApp.hidePreloader();
+              myApp.alert('Error de conexión','Error');
+          }
+      });
+  
+   
+}
 function listaPerdidas(){
     
                      myApp.showPreloader('Cargando...');
@@ -95,14 +190,14 @@ function listaPerdidas(){
                     var html_text = '';
                     for (var i in data) {
                     html_text += " <li >";
-                    html_text += "  <a id='pet' href='#' class='item-link item-content ' >";
+                    html_text += "  <a id='pet"+data[i].id_mascota+"' href='#' class='item-link item-content ' >";
 
                    html_text += " <div class='item-media'><img src="+data[i].path_imagen+" width="+44+"></div>";
                    html_text += " <div class='item-inner'>";
                    html_text += " <div class='item-title-row'>";
                    html_text += " <div class='item-title'>"+data[i].nombre+"</div>";
                    html_text += " </div>";
-                   html_text += " <div class='item-subtitle'>"+data[i].descripcion+"</div>";
+                   html_text += " <div class='item-subtitle'>"+data[i].descripcion+" (Mascota sin localización)</div>";
                    html_text += " </div>";
 
                     html_text += "<input type='hidden' id='idpet' value ="+data[i].id_mascota+">";
@@ -115,17 +210,16 @@ function listaPerdidas(){
                     }
                   
                   $('#contenedor').append(html_text);
-                  myApp.hidePreloader();
-                   myApp.popup('.popup-search');
+                 listaEncontrada();
               }else{
                   myApp.hidePreloader();
-                  var msg = 'Error de conexión';
+                  var msg = data.respuesta;
                   myApp.alert(msg,'Error');
               }
           },
           error: function (xhr, status) {
               myApp.hidePreloader();
-              myApp.alert('Datos Incorrectos','Error');
+              myApp.alert('Error Conexión','Error');
           }
       });
   
