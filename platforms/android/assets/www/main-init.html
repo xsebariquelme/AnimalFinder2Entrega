@@ -106,6 +106,10 @@
                                 </i>
                                 <span class="tabbar-label">Ver Mascotas Buscadas</span>
                             </a>
+                            <a id="geo" class="tab-link">
+                                <i class="f7-icons color-green-light">compass_fill</i> 
+                                <span class="tabbar-label color-green-light">Obtener Posisión</span>
+                            </a>
                         </div>
                     </div>
 					
@@ -175,20 +179,22 @@
                             </div>
                         </div>
                     </div>
-					<div class="popup popup-mascota-detalle">
-                        <div class="content-block-title"> Detalle Mascota Perdida </div>
-                        <!-- Inset content block -->
-                        <div class="content-block inset">
-                            <div class="content-block-inner">
-									<p><h4>Descripción:</h4></p>
-									<p>Se busca Perrito!!</p>
-									<p>Ayuda porfavor!!</p>
-									<img src="img/dog.jpg" width="100%"/>
-									<a class="bottom"  id="pet1">Enviar Notificación</a>
-									<p><a href="#" class="close-popup">Cerrar</a></p>
-                            </div>
-                        </div>
+					<div id="contenedor2" class="popup popup-mascota-detalle">
+                        
                     </div>
+                <div class="popup popup-geo">
+        <div class="content-block-title">Localización</div>
+        <div class="content-block">
+            <p><b>Latitud: </b><span id="lat"></span></p>
+            <p><b>Longitud: </b><span id="lon"></span></p>
+        </div>
+        <div class="content-block inset">
+            <div id="map" class="content-block-inner" style="height: 250px;"></div>
+        </div>
+        <div class="content-block">
+            <p><a href="#" class="close-popup">Cerrar</a></p>
+        </div>
+    </div>
 					<div class="popup popup-mascota-detalle2">
                         <div class="content-block-title"> Detalle Mascota Perdida </div>
                         <!-- Inset content block -->
@@ -227,6 +233,8 @@
     <script type="text/javascript" src="lib/jquery/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="lib/framework7/js/framework7.min.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
+        
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFkI3pnhhhjLcD-B5fYcknG_cnJi-NQR4&"></script>
 
 </body>
 

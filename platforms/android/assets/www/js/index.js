@@ -17,7 +17,7 @@ document.addEventListener("deviceready", function(){
     $("#cerrarindex").bind("click", gotoindex);
     $("#registrarcuenta").bind("click",registrarcuenta);
     $("#back").bind("click",back);
-	$("#pet3").bind('click', showpet);
+	$("#pet3").bind('click', gomain);
     $("[id*=pet]").bind('click', showpet);
 	$('#listar').bind('click', listaPerdidas);
 	$('#cerrarmain').bind('click', gomain);
@@ -25,19 +25,54 @@ document.addEventListener("deviceready", function(){
     $('#nombre_user_session').html('<b>Hola ' + localStorage.getItem('nombre_completo') + '</b>');
     $('#tosend').bind('click', uploadPhoto);
     $('#cerrarsesion').bind('click', cerrarsesion);
+      $('#geo').bind('click', geo);
 
 });
-function showpet(){
-      myApp.showPreloader('Cargando...');
+function geo(){
+    myApp.showPreloader('Localizando...');
+    navigator.geolocation.getCurrentPosition(
+        function(position){
+            $('#lat').html(position.coords.latitude);
+            $('#lon').html(position.coords.longitude);
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: position.coords.latitude, lng: position.coords.longitude},
+                zoom: 16
+            });
+            var marker = new google.maps.Marker({
+                position: {lat: position.coords.latitude, lng: position.coords.longitude},
+                map: map,
+                title: 'Mi posición'
+            });
+            
+            myApp.hidePreloader();
+            myApp.popup('.popup-geo');
+        },
+        function(error){
+            myApp.alert('Se ha producido un error','Animal Finder');
+            myApp.hidePreloader();
+        },
+        {
+            maximumAge: 3000, 
+            timeout: 5000,
+            enableHighAccuracy: true 
+        }
+    );
+}
+
+function showpet(idpet){
+     // myApp.showPreloader('Cargando...');
+    console.log("Cargando");
     $.ajax({
           dataType: 'json',
           type: 'POST',
           data: {
-              id:$('#idpet').val()
+              id:idpet
               
           },
-          url: 'http://http://servicioswebmoviles.hol.es/index.php/WS_SOLICITARINFOPERDIDAS',
+       
+          url: 'http://servicioswebmoviles.hol.es/index.php/WS_SOLICITARINFOPERDIDAS',
           success: function (data, status, xhr) {
+               console.log("Cargando5");
               if(data.respuesta==null){
                   var html_text='';
              html_text += "<div class='content-block-title'> Detalle Mascota Perdida </div>";
@@ -54,7 +89,7 @@ function showpet(){
             html_text += "</div>";
             html_text += "</div>";
          $('#contenedor2').append(html_text);
-                   
+                    console.log("Cargando2");
                     myApp.hidePreloader();
                    myApp.popup('.popup-mascota-detalle');
                   }else{
@@ -64,11 +99,12 @@ function showpet(){
               }
           },
           error: function (xhr, status) {
+               console.log("Cargando3");
               myApp.hidePreloader();
-              myApp.alert('Datos Incorrectos','Error');
+              myApp.alert('Datos Incorrectos xd','Error');
           }
       });
-  
+   console.log("Cargando4");
 }
 function cerrarsesion(){
         window.location = "index.html";
@@ -137,7 +173,7 @@ function listaEncontrada(){
                     var html_text = '';
                     for (var i in data) {
                     html_text += " <li >";
-                    html_text += "  <a id='pet' href='#' class='item-link item-content ' >";
+                    html_text += "  <a id='pet' href='#' class='item-link item-content ' onclick='showpet("+data[i].id_mascota+")' >";
 
                    html_text += " <div class='item-media'><img src="+data[i].path_imagen+" width="+44+"></div>";
                    html_text += " <div class='item-inner'>";
@@ -190,7 +226,7 @@ function listaPerdidas(){
                     var html_text = '';
                     for (var i in data) {
                     html_text += " <li >";
-                    html_text += "  <a id='pet"+data[i].id_mascota+"' href='#' class='item-link item-content ' >";
+                    html_text += "  <a id='pet"+data[i].id_mascota+"' href='#' class='item-link item-content 'onclick='showpet("+data[i].id_mascota+")' >";
 
                    html_text += " <div class='item-media'><img src="+data[i].path_imagen+" width="+44+"></div>";
                    html_text += " <div class='item-inner'>";
