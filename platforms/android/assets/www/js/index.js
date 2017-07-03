@@ -101,7 +101,7 @@ function showpet(idpet){
           error: function (xhr, status) {
                console.log("Cargando3");
               myApp.hidePreloader();
-              myApp.alert('Datos Incorrectos xd','Error');
+              myApp.alert('Datos Incorrectos ','Animal Finder');
           }
       });
    console.log("Cargando4");
@@ -143,17 +143,17 @@ function registrarcuenta(){
               }else{
                   myApp.hidePreloader();
                   var msg = "Datos no guardados";
-                  myApp.alert(msg,'Error');
+                  myApp.alert(msg,'Animal Finder');
               }
           },
           error: function (xhr, status) {
               myApp.hidePreloader();
-              myApp.alert('Datos Incorrectos','Error');
+              myApp.alert('Datos Incorrectos','Animal Finder');
           }
       });
 }else{
             myApp.hidePreloader();
-              myApp.alert('Debe completar los campos','Error');
+              myApp.alert('Debe completar los campos','Animal Finder');
 }
 }
 function gomain(){
@@ -250,12 +250,12 @@ function listaPerdidas(){
               }else{
                   myApp.hidePreloader();
                   var msg = data.respuesta;
-                  myApp.alert(msg,'Error');
+                  myApp.alert(msg,'Animal Finder');
               }
           },
           error: function (xhr, status) {
               myApp.hidePreloader();
-              myApp.alert('Error Conexión','Error');
+              myApp.alert('Error Conexión','Animal Finder');
           }
       });
   
@@ -311,7 +311,7 @@ function uploadPhoto() {
         var ft = new FileTransfer();
         ft.upload(imageURI, "http://servicioswebmoviles.hol.es/index.php/WS_REGISTRARMASCOTA", win, fail, options);
     }else{
-        myApp.alert('No hay foto');
+        myApp.alert('No hay foto','Animal Finder');
     }
 }
 function win(r) {
@@ -370,12 +370,12 @@ function iniciar_session(){
                   conn_success();
               }else{
                   myApp.hidePreloader();
-                  myApp.alert('Datos Erroneos','Error');;
+                  myApp.alert('Datos Erroneos','Animal Finder');;
               }
           },
           error: function (xhr, status) {
               myApp.hidePreloader();
-              myApp.alert('Error en la conexión','Error');
+              myApp.alert('Error en la conexión','Animal Finder');
           }
       });
     
